@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Admin Dashboard</h1>
+    
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Users</h5>
+                    <p class="card-text display-4">{{ total_users }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Viewers</h5>
+                    <p class="card-text display-4">{{ total_viewers }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Total Admins</h5>
+                    <p class="card-text display-4">{{ total_admins }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Management Card -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow">
+            <div class="card-body text-center">
+                <i class="fas fa-users-cog fa-3x mb-3 text-primary"></i>
+                <h5 class="card-title">User Management</h5>
+                <p class="card-text">Manage user profiles, update salaries, and view user details</p>
+                <a href="{% url 'user_management' %}" class="btn btn-primary">
+                    <i class="fas fa-users me-2"></i>Manage Users
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for activity in recent_activity %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ activity.user.username }}</h6>
+                                <small>{{ activity.timestamp|timesince }} ago</small>
+                            </div>
+                            <p class="mb-1">{{ activity.get_action_display }}</p>
+                            <small>IP: {{ activity.ip_address }}</small>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">No recent activity</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Registrations -->
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Registrations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for user in recent_registrations %}
+                        <div class="list-group-item">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1">{{ user.get_full_name }}</h6>
+                                <small>{{ user.date_joined|timesince }} ago</small>
+                            </div>
+                            <p class="mb-1">Username: {{ user.username }}</p>
+                            <small>Type: {{ user.userprofile.user_type }}</small>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">No recent registrations</p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

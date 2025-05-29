@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit User: {{ user_to_edit.get_full_name }}</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <strong>ID Number:</strong> {{ user_to_edit.profile.id_number }}
+                        <small class="text-muted d-block">This ID is automatically generated and cannot be changed.</small>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <h5 class="mb-3">Account Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ user_form.first_name|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ user_form.last_name|as_crispy_field }}
+                            </div>
+                        </div>
+                        {{ user_form.email|as_crispy_field }}
+                        
+                        <h5 class="mb-3 mt-4">Profile Information</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ profile_form.phone_number|as_crispy_field }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ profile_form.salary|as_crispy_field }}
+                            </div>
+                        </div>
+                        {{ profile_form.address|as_crispy_field }}
+                        
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                            <a href="{% url 'user_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

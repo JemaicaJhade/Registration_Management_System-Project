@@ -1,0 +1,138 @@
+{% extends 'accounts/base.html' %}
+{% block title %}Activity Log{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="text-center mb-0">
+                    <i class="fas fa-history me-2"></i>Activity Log
+                </h2>
+            </div>
+            <div class="card-body">
+                <!-- Filter Section -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form method="get" class="row g-3">
+                                    <div class="col-md-4">
+                                        <label class="form-label">User</label>
+                                        <input type="text" name="user" class="form-control" value="{{ request.GET.user }}" placeholder="Filter by username">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Action</label>
+                                        <select name="action" class="form-select">
+                                            <option value="">All Actions</option>
+                                            <option value="login" {% if request.GET.action == 'login' %}selected{% endif %}>Login</option>
+                                            <option value="logout" {% if request.GET.action == 'logout' %}selected{% endif %}>Logout</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Date Range</label>
+                                        <input type="date" name="date" class="form-control" value="{{ request.GET.date }}">
+                                    </div>
+                                    <div class="col-12 text-end">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-filter me-2"></i>Apply Filters
+                                        </button>
+                                        <a href="{% url 'activity_log' %}" class="btn btn-secondary">
+                                            <i class="fas fa-redo me-2"></i>Reset
+                                        </a>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Activity Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th><i class="fas fa-user me-2"></i>User</th>
+                                <th><i class="fas fa-tasks me-2"></i>Action</th>
+                                <th><i class="fas fa-clock me-2"></i>Date & Time</th>
+                                <th><i class="fas fa-network-wired me-2"></i>IP Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for log in activity_logs %}
+                            <tr>
+                                <td>
+                                    <i class="fas fa-user-circle me-2"></i>{{ log.user.username }}
+                                </td>
+                                <td>
+                                    {% if log.action == 'login' %}
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-sign-in-alt me-1"></i>{{ log.get_action_display }}
+                                        </span>
+                                    {% else %}
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-sign-out-alt me-1"></i>{{ log.get_action_display }}
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <i class="fas fa-calendar-alt me-2"></i>{{ log.timestamp|date:"F j, Y, g:i a" }}
+                                </td>
+                                <td>
+                                    <i class="fas fa-globe me-2"></i>{{ log.ip_address|default:"N/A" }}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">
+                                    <i class="fas fa-info-circle me-2"></i>No activity logs found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if is_paginated %}
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page=1{% if request.GET.user %}&user={{ request.GET.user }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                                    <i class="fas fa-angle-double-left me-1"></i>First
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.user %}&user={{ request.GET.user }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                                    <i class="fas fa-angle-left me-1"></i>Previous
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        <li class="page-item active">
+                            <span class="page-link">
+                                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                            </span>
+                        </li>
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.user %}&user={{ request.GET.user }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                                    Next<i class="fas fa-angle-right ms-1"></i>
+                                </a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.user %}&user={{ request.GET.user }}{% endif %}{% if request.GET.action %}&action={{ request.GET.action }}{% endif %}{% if request.GET.date %}&date={{ request.GET.date }}{% endif %}">
+                                    Last<i class="fas fa-angle-double-right ms-1"></i>
+                                </a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

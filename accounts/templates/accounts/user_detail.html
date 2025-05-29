@@ -1,0 +1,148 @@
+{% extends 'accounts/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}User Details{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="text-center mb-0">
+                        <i class="fas fa-user me-2"></i>User Details
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <!-- Basic Information -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h4 class="border-bottom pb-2">
+                                <i class="fas fa-info-circle me-2"></i>Basic Information
+                            </h4>
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        {{ user_form|crispy }}
+                                    </div>
+                                    <div class="col-md-6">
+                                        {{ profile_form|crispy }}
+                                    </div>
+                                </div>
+                                <div class="d-grid gap-2 mt-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Save Changes
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Personal Data -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <h4 class="border-bottom pb-2">
+                                <i class="fas fa-id-card me-2"></i>Personal Data
+                            </h4>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <tr>
+                                        <th style="width: 30%">Date of Birth</th>
+                                        <td>{{ user_obj.personal_data.date_of_birth|default:"Not provided" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Gender</th>
+                                        <td>{{ user_obj.personal_data.get_gender_display|default:"Not provided" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Marital Status</th>
+                                        <td>{{ user_obj.personal_data.get_marital_status_display|default:"Not provided" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Nationality</th>
+                                        <td>{{ user_obj.personal_data.nationality|default:"Not provided" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Emergency Contact</th>
+                                        <td>
+                                            {% if user_obj.personal_data.emergency_contact_name %}
+                                                {{ user_obj.personal_data.emergency_contact_name }}
+                                                ({{ user_obj.personal_data.emergency_contact_number }})
+                                            {% else %}
+                                                Not provided
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Blood Type</th>
+                                        <td>{{ user_obj.personal_data.blood_type|default:"Not provided" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Medical Conditions</th>
+                                        <td>{{ user_obj.personal_data.medical_conditions|default:"None"|linebreaks }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Allergies</th>
+                                        <td>{{ user_obj.personal_data.allergies|default:"None"|linebreaks }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Education Level</th>
+                                        <td>{{ user_obj.personal_data.education_level|default:"Not provided" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Employment Status</th>
+                                        <td>{{ user_obj.personal_data.employment_status|default:"Not provided" }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Hobbies</th>
+                                        <td>{{ user_obj.personal_data.hobbies|default:"Not provided"|linebreaks }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                            {% if user_obj == request.user or is_admin %}
+                            <div class="d-grid gap-2 mt-3">
+                                <a href="{% url 'edit_personal_data' %}" class="btn btn-warning">
+                                    <i class="fas fa-edit me-2"></i>Edit Personal Data
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Activity Log -->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h4 class="border-bottom pb-2">
+                                <i class="fas fa-history me-2"></i>Recent Activity
+                            </h4>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Action</th>
+                                            <th>Timestamp</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for log in activity_logs %}
+                                        <tr>
+                                            <td>{{ log.get_action_display }}</td>
+                                            <td>{{ log.timestamp|date:"F j, Y H:i" }}</td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="2" class="text-center">No activity recorded</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

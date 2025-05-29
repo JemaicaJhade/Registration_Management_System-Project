@@ -1,0 +1,522 @@
+{% extends 'accounts/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <h2 class="text-center mb-0">
+                    <i class="fas fa-user-circle me-2"></i>My Profile
+                </h2>
+            </div>
+            <div class="card-body">
+                {% if user.userprofile.is_admin %}
+                <!-- Admin Dashboard Context Box -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card bg-gradient-primary text-white shadow">
+                            <div class="card-body">
+                                <h5 class="card-title mb-3">
+                                    <i class="fas fa-tachometer-alt me-2"></i>Admin Dashboard Overview
+                                </h5>
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="text-center">
+                                            <h6 class="mb-1">Total Users</h6>
+                                            <h3 class="mb-0">{{ total_users }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="text-center">
+                                            <h6 class="mb-1">Admin Users</h6>
+                                            <h3 class="mb-0">{{ admin_users }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="text-center">
+                                            <h6 class="mb-1">Viewer Users</h6>
+                                            <h3 class="mb-0">{{ viewer_users }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="text-center">
+                                            <h6 class="mb-1">Active Today</h6>
+                                            <h3 class="mb-0">{{ active_today }}</h3>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'admin_dashboard' %}" class="btn btn-light">
+                                        <i class="fas fa-external-link-alt me-2"></i>Go to Dashboard
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions Section -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-bolt me-2"></i>Quick Actions
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-user-plus fa-3x mb-3 text-primary"></i>
+                                                <h5>Add New User</h5>
+                                                <a href="{% url 'register' %}" class="btn btn-primary btn-sm">
+                                                    <i class="fas fa-plus me-2"></i>Add User
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-file-alt fa-3x mb-3 text-info"></i>
+                                                <h5>View Reports</h5>
+                                                <a href="{% url 'activity_log' %}" class="btn btn-info btn-sm">
+                                                    <i class="fas fa-chart-bar me-2"></i>View Reports
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-cog fa-3x mb-3 text-warning"></i>
+                                                <h5>Settings</h5>
+                                                <a href="#" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-sliders-h me-2"></i>Configure
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-question-circle fa-3x mb-3 text-secondary"></i>
+                                                <h5>Help & Support</h5>
+                                                <a href="#" class="btn btn-secondary btn-sm">
+                                                    <i class="fas fa-life-ring me-2"></i>Get Help
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User Management Section -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-info text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-users me-2"></i>User Management
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-user-plus fa-3x mb-3 text-primary"></i>
+                                                <h5>User List</h5>
+                                                <p class="text-muted">View and manage all users</p>
+                                                <a href="{% url 'user_list' %}" class="btn btn-primary">
+                                                    <i class="fas fa-list me-2"></i>View Users
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-user-edit fa-3x mb-3 text-success"></i>
+                                                <h5>Edit Users</h5>
+                                                <p class="text-muted">Modify user information</p>
+                                                <a href="{% url 'user_list' %}" class="btn btn-success">
+                                                    <i class="fas fa-edit me-2"></i>Edit Users
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card h-100">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-user-shield fa-3x mb-3 text-danger"></i>
+                                                <h5>User Permissions</h5>
+                                                <p class="text-muted">Manage user roles and access</p>
+                                                <a href="{% url 'user_list' %}" class="btn btn-danger">
+                                                    <i class="fas fa-key me-2"></i>Manage Access
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status Section -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-dark text-white">
+                                <h5 class="mb-0">
+                                    <i class="fas fa-server me-2"></i>System Status
+                                </h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h6 class="card-title">
+                                                    <i class="fas fa-database me-2"></i>Database Status
+                                                </h6>
+                                                <p class="mb-0 text-success">
+                                                    <i class="fas fa-check-circle me-2"></i>All Systems Operational
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h6 class="card-title">
+                                                    <i class="fas fa-shield-alt me-2"></i>Security Status
+                                                </h6>
+                                                <p class="mb-0 text-success">
+                                                    <i class="fas fa-check-circle me-2"></i>Protected
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <h6 class="card-title">
+                                                    <i class="fas fa-sync me-2"></i>Last Backup
+                                                </h6>
+                                                <p class="mb-0">
+                                                    <i class="fas fa-clock me-2"></i>{{ user.userprofile.updated_at|date:"F j, Y, g:i a" }}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h5 class="border-bottom pb-2">
+                            <i class="fas fa-info-circle me-2"></i>Account Information
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th style="width: 30%">ID Number</th>
+                                    <td>
+                                        <span class="badge bg-primary">
+                                            {{ user.userprofile.id_number }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Username</th>
+                                    <td>{{ user.username }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Account Type</th>
+                                    <td>
+                                        <span class="badge {% if user.userprofile.is_admin %}bg-danger{% else %}bg-info{% endif %}">
+                                            {{ user.userprofile.user_type|title }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Member Since</th>
+                                    <td>{{ user.userprofile.created_at|date:"F j, Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Last Updated</th>
+                                    <td>{{ user.userprofile.updated_at|date:"F j, Y, g:i a" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Phone Number</th>
+                                    <td>{{ user.userprofile.phone_number|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Address</th>
+                                    <td>{{ user.userprofile.address|default:"Not provided" }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Salary</th>
+                                    <td>
+                                        {% if user.userprofile.salary %}
+                                            ${{ user.userprofile.salary|floatformat:2 }}
+                                        {% else %}
+                                            Not set
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Data Section -->
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="border-bottom pb-2 mb-0">
+                                <i class="fas fa-id-card me-2"></i>Personal Data Sheet
+                            </h5>
+                            <a href="{% url 'edit_personal_data' %}" class="btn btn-primary">
+                                <i class="fas fa-edit me-2"></i>Edit Personal Data
+                            </a>
+                        </div>
+
+                        <!-- Warning Message -->
+                        <div class="alert alert-warning mb-4">
+                            <h4 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i>Important Notice</h4>
+                            <p class="mb-0">Please read the attached guide to filling out the Personal Data Sheet (PDS) before accomplishing this form. All information provided must be accurate and truthful.</p>
+                        </div>
+
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <!-- I. Personal Information -->
+                                <div class="mb-4">
+                                    <h4 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-user me-2"></i>I. Personal Information
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Date of Birth</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.date_of_birth|date:"F j, Y"|default:"Not provided" }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Age</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.age|default:"Not provided" }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.email|default:"Not provided" }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Gender</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.get_gender_display|default:"Not provided" }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Marital Status</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.get_marital_status_display|default:"Not provided" }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Nationality</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.nationality|default:"Not provided" }}</p>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Blood Type</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.blood_type|default:"Not provided" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- II. Family Background -->
+                                <div class="mb-4">
+                                    <h4 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-users me-2"></i>II. Family Background
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Emergency Contact</label>
+                                                <p class="form-control-plaintext">
+                                                    {% if user.personal_data.emergency_contact_name %}
+                                                        {{ user.personal_data.emergency_contact_name }}
+                                                        ({{ user.personal_data.emergency_contact_number }})
+                                                    {% else %}
+                                                        Not provided
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- III. Educational Background -->
+                                <div class="mb-4">
+                                    <h4 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-graduation-cap me-2"></i>III. Educational Background
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Education Level</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.education_level|default:"Not provided" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- IV. Civil Service Eligibility -->
+                                <div class="mb-4">
+                                    <h4 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-award me-2"></i>IV. Civil Service Eligibility
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Civil Service Eligibility</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.civil_service_eligibility|default:"Not provided" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- V. Work Experience -->
+                                <div class="mb-4">
+                                    <h4 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-briefcase me-2"></i>V. Work Experience
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Employment Status</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.employment_status|default:"Not provided" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- VI. Voluntary Work -->
+                                <div class="mb-4">
+                                    <h4 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-hands-helping me-2"></i>VI. Voluntary Work
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Voluntary Work Experience</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.voluntary_work|default:"Not provided" }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- VIII. Other Information -->
+                                <div class="mb-4">
+                                    <h4 class="text-primary border-bottom pb-2">
+                                        <i class="fas fa-info-circle me-2"></i>VIII. Other Information
+                                    </h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Medical Conditions</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.medical_conditions|default:"None"|linebreaks }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Allergies</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.allergies|default:"None"|linebreaks }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Hobbies</label>
+                                                <p class="form-control-plaintext">{{ user.personal_data.hobbies|default:"Not provided"|linebreaks }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <h5 class="border-bottom pb-2">
+                            <i class="fas fa-history me-2"></i>Recent Activity
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Date & Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for log in activity_logs %}
+                                    <tr>
+                                        <td>{{ log.get_action_display }}</td>
+                                        <td>{{ log.timestamp|date:"F j, Y, g:i a" }}</td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="2" class="text-center">No recent activity</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                {% if user.userprofile.is_admin %}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5 class="border-bottom pb-2">
+                            <i class="fas fa-edit me-2"></i>Update Profile
+                        </h5>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    {{ form.phone_number|as_crispy_field }}
+                                </div>
+                                <div class="col-md-6">
+                                    {{ form.salary|as_crispy_field }}
+                                </div>
+                            </div>
+                            {{ form.address|as_crispy_field }}
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

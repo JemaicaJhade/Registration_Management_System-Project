@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}User Profile - {{ profile_user.get_full_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">User Profile: {{ profile_user.get_full_name }}</h4>
+                    <div>
+                        <a href="{% url 'edit_user' profile_user.id %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-edit"></i> Edit Profile
+                        </a>
+                        <a href="{% url 'edit_personal_data_admin' profile_user.id %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-user-edit"></i> Edit Personal Data
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- I. Personal Information -->
+                    <div class="section mb-4">
+                        <h4 class="section-title bg-light p-2 rounded">
+                            <i class="fas fa-user me-2"></i>I. Personal Information
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Date of Birth</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.date_of_birth|date:"F j, Y"|default:"Not provided" }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Age</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.age|default:"Not provided" }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Email</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.email|default:"Not provided" }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Gender</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.get_gender_display|default:"Not provided" }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Marital Status</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.get_marital_status_display|default:"Not provided" }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Nationality</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.nationality|default:"Not provided" }}</p>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Blood Type</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.blood_type|default:"Not provided" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- II. Family Background -->
+                    <div class="section mb-4">
+                        <h4 class="section-title bg-light p-2 rounded">
+                            <i class="fas fa-users me-2"></i>II. Family Background
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Emergency Contact</label>
+                                    <p class="form-control-plaintext">
+                                        {% if profile_user.personal_data.emergency_contact_name %}
+                                            {{ profile_user.personal_data.emergency_contact_name }}
+                                            ({{ profile_user.personal_data.emergency_contact_number }})
+                                        {% else %}
+                                            Not provided
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- III. Educational Background -->
+                    <div class="section mb-4">
+                        <h4 class="section-title bg-light p-2 rounded">
+                            <i class="fas fa-graduation-cap me-2"></i>III. Educational Background
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Education Level</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.education_level|default:"Not provided" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- IV. Civil Service Eligibility -->
+                    <div class="section mb-4">
+                        <h4 class="section-title bg-light p-2 rounded">
+                            <i class="fas fa-award me-2"></i>IV. Civil Service Eligibility
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Civil Service Eligibility</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.civil_service_eligibility|default:"Not provided" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- V. Work Experience -->
+                    <div class="section mb-4">
+                        <h4 class="section-title bg-light p-2 rounded">
+                            <i class="fas fa-briefcase me-2"></i>V. Work Experience
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Employment Status</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.employment_status|default:"Not provided" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VI. Voluntary Work -->
+                    <div class="section mb-4">
+                        <h4 class="section-title bg-light p-2 rounded">
+                            <i class="fas fa-hands-helping me-2"></i>VI. Voluntary Work
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Voluntary Work Experience</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.voluntary_work|default:"Not provided" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VIII. Other Information -->
+                    <div class="section mb-4">
+                        <h4 class="section-title bg-light p-2 rounded">
+                            <i class="fas fa-info-circle me-2"></i>VIII. Other Information
+                        </h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Medical Conditions</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.medical_conditions|default:"None"|linebreaks }}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Allergies</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.allergies|default:"None"|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Hobbies</label>
+                                    <p class="form-control-plaintext">{{ profile_user.personal_data.hobbies|default:"Not provided"|linebreaks }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row mt-4">
+                        <div class="col-md-12 text-center">
+                            <a href="{% url 'user_management' %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left me-2"></i>Back to User Management
+                            </a>
+                            <button onclick="window.print()" class="btn btn-info">
+                                <i class="fas fa-print me-2"></i>Print PDS
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .btn, .card-header {
+            display: none !important;
+        }
+        .card {
+            border: none !important;
+        }
+        .section-title {
+            background-color: #f8f9fa !important;
+            -webkit-print-color-adjust: exact;
+        }
+    }
+    .section-title {
+        border-left: 4px solid #0d6efd;
+    }
+    .form-control-plaintext {
+        padding: 0.375rem 0;
+    }
+</style>
+{% endblock %} 
