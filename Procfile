@@ -1,1 +1,2 @@
-web: gunicorn registration_system.wsgi 
+web: gunicorn registration_system.wsgi:application
+
